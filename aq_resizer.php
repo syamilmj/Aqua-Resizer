@@ -66,12 +66,17 @@ function aq_resize($url, $width, $height = null, $crop = null, $single=null) {
 	
 	//return the output
 	if($single) {
+		//array return
 		$image = array (
 			'url' => $img_url,
 			'width' => $dst_w,
 			'height' => $dst_h
-		)
+		);
+		
 	} else {
-		return $img_url;
+		//url return
+		$image = $img_url;
 	}
+	
+	return $image;
 }
