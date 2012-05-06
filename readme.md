@@ -19,8 +19,8 @@ Put this in the single.php file
 ```
 <?php
 
-$img = wp_get_attachment_image_src(get_post_thumbnail_id(),'full'); //get full URL to image (use "large" or "medium" if the images too big)
-$image = aq_resize( $thumb, '', 560, 310, true ); //resize & crop the image
+$img_url = wp_get_attachment_image_src(get_post_thumbnail_id(),'full'); //get full URL to image (use "large" or "medium" if the images too big)
+$image = aq_resize( $img_url, '', 560, 310, true ); //resize & crop the image
 
 ?>
 
