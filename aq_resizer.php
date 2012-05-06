@@ -62,32 +62,27 @@ function aq_resize($url, $width, $height = null, $crop = null, $single=null) {
 	
 		$width = $orig_w;
 		
-		if($crop) {
-		
-			if(!$dst_h) :
-				$img_url = $url;
-				$dst_w = $width;
-				$dst_h = $orig_h;
-			else :
-			
-				//check if cropped image already exists, so we can return that instead
-				$destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
-				
-				if(file_exists($destfilename)) {
-					$img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.{$ext}";
-				} else {
-					$resized_img_path = image_resize( $img_path, $width, $height, $crop );
-					$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
-					$img_url = $upload_url . $resized_rel_path;
-				}
-				
-			endif;
-			
-		} else {
+		if(!$dst_h) :
 		
 			$img_url = $url;
+			$dst_w = $width;
+			$dst_h = $orig_h;
 			
-		}
+		else :
+		
+			//check if cropped image already exists, so we can return that instead
+			$destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
+			
+			if(file_exists($destfilename)) {
+				$img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.{$ext}";
+			} else {
+				$resized_img_path = image_resize( $img_path, $width, $height, $crop );
+				$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
+				$img_url = $upload_url . $resized_rel_path;
+			}
+			
+		endif;
+		
 	}
 	//else check if cache exists
 	elseif(file_exists($destfilename)) {
