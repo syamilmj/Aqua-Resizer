@@ -1,12 +1,12 @@
 <?php
 
 /**
-* Title			: Aqua Resizer
+* Title		: Aqua Resizer
 * Description	: Resizes WordPress images on the fly
-* Version		: 1.0
-* Author		: Syamil MJ
+* Version	: 1.0
+* Author	: Syamil MJ
 * Author URI	: http://aquagraphite.com
-* License		: WTFPL - http://sam.zoy.org/wtfpl/
+* License	: WTFPL - http://sam.zoy.org/wtfpl/
 * Documentation	: https://github.com/sy4mil/Aqua-Resizer/
 *
 * @param string $url - (required) must be uploaded using wp media uploader
@@ -14,8 +14,9 @@
 * @param int $height - (optional)
 * @param bool $crop - (optional) default to soft crop
 * @param bool $single - (optional) returns an array if true
-* @uses wp_upload_dir
-* @uses image_resize_dimensions
+* @uses wp_upload_dir()
+* @uses image_resize_dimensions()
+* @uses image_resize()
 *
 * @return array
 */
