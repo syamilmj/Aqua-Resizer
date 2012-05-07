@@ -18,7 +18,7 @@
 * @uses image_resize_dimensions()
 * @uses image_resize()
 *
-* @return array
+* @return str | array
 */
 
 function aq_resize($url, $width, $height = null, $crop = null, $single=null) {
