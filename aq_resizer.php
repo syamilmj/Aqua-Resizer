@@ -60,13 +60,11 @@ function aq_resize($url, $width, $height = null, $crop = null, $single=null) {
 	
 	//if orig size is smaller
 	if($width >= $orig_w) {
-	
-		$width = $orig_w;
 		
 		if(!$dst_h) :
 		
 			$img_url = $url;
-			$dst_w = $width;
+			$dst_w = $orig_w;
 			$dst_h = $orig_h;
 			
 		else :
