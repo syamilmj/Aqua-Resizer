@@ -66,13 +66,12 @@ function aq_resize( $url, $width, $height = null, $crop = null, $single = true )
 			$dst_h = $orig_h;
 			
 		else :
-			//check if cropped image already exists, so we can return that instead
-			$destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
-			
+			//else check if cache exists
 			if(file_exists($destfilename)) {
 				$img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.{$ext}";
-			} else {
-				//else resize and return the new resized image url
+			} 
+			//else resize and return the new resized image url
+			else {
 				$resized_img_path = image_resize( $img_path, $width, $height, $crop );
 				$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
 				$img_url = $upload_url . $resized_rel_path;
