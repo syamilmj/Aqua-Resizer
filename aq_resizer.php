@@ -18,10 +18,11 @@
 * @uses image_resize_dimensions()
 * @uses image_resize()
 *
-* @return str | array
+* @return str|array
 */
 
 function aq_resize($url, $width, $height = null, $crop = null, $single=null) {
+	
 	//validate inputs
 	if(!$url OR !$width ) return false;
 	
