@@ -13,7 +13,7 @@
 * @param int $width - (required)
 * @param int $height - (optional)
 * @param bool $crop - (optional) default to soft crop
-* @param bool $single - (optional) returns an array if true
+* @param bool $single - (optional) returns an array if false
 * @uses wp_upload_dir()
 * @uses image_resize_dimensions()
 * @uses image_resize()
@@ -21,7 +21,7 @@
 * @return str|array
 */
 
-function aq_resize($url, $width, $height = null, $crop = null, $single = null) {
+function aq_resize( $url, $width, $height = null, $crop = null, $single = true ) {
 	
 	//validate inputs
 	if(!$url OR !$width ) return false;
@@ -93,7 +93,7 @@ function aq_resize($url, $width, $height = null, $crop = null, $single = null) {
 	}
 	
 	//return the output
-	if($single) {
+	if(!$single) {
 		//array return
 		$image = array (
 			'url' => $img_url,
