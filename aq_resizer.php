@@ -3,7 +3,7 @@
 /**
 * Title		: Aqua Resizer
 * Description	: Resizes WordPress images on the fly
-* Version	: 1.0
+* Version	: 1.1
 * Author	: Syamil MJ
 * Author URI	: http://aquagraphite.com
 * License	: WTFPL - http://sam.zoy.org/wtfpl/
@@ -21,7 +21,7 @@
 * @return str|array
 */
 
-function aq_resize($url, $width, $height = null, $crop = null, $single=null) {
+function aq_resize($url, $width, $height = null, $crop = null, $single = null) {
 	
 	//validate inputs
 	if(!$url OR !$width ) return false;
@@ -46,8 +46,6 @@ function aq_resize($url, $width, $height = null, $crop = null, $single=null) {
 	$ext = $info['extension'];
 	list($orig_w,$orig_h) = getimagesize($img_path);
 	
-	//use original width if image is smaller than defined width
-	
 	//get image size after cropping
 	$dims = image_resize_dimensions($orig_w, $orig_h, $width, $height, $crop);
 	$dst_w = $dims[4];
@@ -58,24 +56,23 @@ function aq_resize($url, $width, $height = null, $crop = null, $single=null) {
 	$dst_rel_path = str_replace( '.'.$ext, '', $rel_path);
 	$destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
 	
-	
 	//if orig size is smaller
 	if($width >= $orig_w) {
 		
 		if(!$dst_h) :
-		
+			//can't resize, so return original url
 			$img_url = $url;
 			$dst_w = $orig_w;
 			$dst_h = $orig_h;
 			
 		else :
-		
 			//check if cropped image already exists, so we can return that instead
 			$destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
 			
 			if(file_exists($destfilename)) {
 				$img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.{$ext}";
 			} else {
+				//else resize and return the new resized image url
 				$resized_img_path = image_resize( $img_path, $width, $height, $crop );
 				$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
 				$img_url = $upload_url . $resized_rel_path;
@@ -105,7 +102,7 @@ function aq_resize($url, $width, $height = null, $crop = null, $single=null) {
 		);
 		
 	} else {
-		//url return
+		//str return
 		$image = $img_url;
 	}
 	
