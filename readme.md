@@ -11,7 +11,7 @@ With Aqua Resizer, the only required inputs are the URL and width. It's easy, fa
 
 ## How to use
 
-Simple copy aq_resizer.php into your theme and reference it from your functions.php file e.g. `require_once('aq_resizer.php');`, then you're good to go.
+Simply copy aq_resizer.php into your theme and reference it from your functions.php file e.g. `require_once('aq_resizer.php');`, then you're good to go.
 
 You can then use it in your theme as such:
 
@@ -28,9 +28,9 @@ More usage instructions and examples can be found in our [wiki](https://github.c
 Do whatever you want with it. A linkback would be nice :)
 
 ## Donations
-If you have some spare bucks, please seriously consider helping the World Food Programme to build world without hunger. Your donations will provide foods & shelter to those who needs it most! - [Fill the Cup!](https://www.wfp.org/donate/fillthecup_getinvolved)
+If you have some spare bucks, please seriously consider helping the World Food Programme to build world without hunger. Your donations will provide foods & shelters to those who needs them the most! - [Fill the Cup!](https://www.wfp.org/donate/fillthecup_getinvolved)
 
-Also, I have some themes on [Themeforest](http://themeforest.net/user/SyamilMJ/portfolio) that you might be interested in. :)
+Or, [buy me a coffee](http://goo.gl/tsbK5) :)
 
 ## Contacts
 
