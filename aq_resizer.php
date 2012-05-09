@@ -67,7 +67,7 @@ function aq_resize( $url, $width, $height = null, $crop = null, $single = true )
 			
 		else :
 			//else check if cache exists
-			if(file_exists($destfilename)) {
+			if(file_exists($destfilename) && getimagesize($destfilename)) {
 				$img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.{$ext}";
 			} 
 			//else resize and return the new resized image url
@@ -81,7 +81,7 @@ function aq_resize( $url, $width, $height = null, $crop = null, $single = true )
 		
 	}
 	//else check if cache exists
-	elseif(file_exists($destfilename)) {
+	elseif(file_exists($destfilename) && getimagesize($destfilename)) {
 		$img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.{$ext}";
 	} 
 	//else, we resize the image and return the new resized image url
