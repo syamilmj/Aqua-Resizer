@@ -1,5 +1,5 @@
 # [Aqua Resizer](http://aquagraphite.com/)
-### Version 1.1.2
+### Version 1.1.3
 
 This small script will allow you to resize & crop WordPress images uploaded via the media uploader. It relies on WP's native functions to resize the images, and checks if there is an already resized version of the image so that it won't be wasting your server's resources to regenerate the images.
 
@@ -39,6 +39,9 @@ Twitter: http://twitter.com/syamilmj
 Website: http://aquagraphite.com
 
 ## Changelog
+
+**v1.1.3**
+- array return use int (0,1,2)
 
 **v1.1.2**
 - add check for broken image

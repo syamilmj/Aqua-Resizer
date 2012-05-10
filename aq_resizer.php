@@ -3,7 +3,7 @@
 /**
 * Title		: Aqua Resizer
 * Description	: Resizes WordPress images on the fly
-* Version	: 1.1.2
+* Version	: 1.1.3
 * Author	: Syamil MJ
 * Author URI	: http://aquagraphite.com
 * License	: WTFPL - http://sam.zoy.org/wtfpl/
@@ -92,17 +92,16 @@ function aq_resize( $url, $width, $height = null, $crop = null, $single = true )
 	}
 	
 	//return the output
-	if(!$single) {
-		//array return
-		$image = array (
-			'url' => $img_url,
-			'width' => $dst_w,
-			'height' => $dst_h
-		);
-		
-	} else {
+	if($single) {
 		//str return
 		$image = $img_url;
+	} else {
+		//array return
+		$image = array (
+			0 => $img_url,
+			1 => $dst_w,
+			2 => $dst_h
+		);
 	}
 	
 	return $image;
