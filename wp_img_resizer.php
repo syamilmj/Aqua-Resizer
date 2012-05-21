@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: WP Image Resizer
- * Plugin URI:  
+ * Plugin URI:  https://github.com/bueltge/WP-Image-Resizer/
  * Text Domain: wp-img-resizer
  * Domain Path: /languages
  * Description: Resize images on the fly - an TimThumb alternative with WordPress defaults
