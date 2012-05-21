@@ -6,8 +6,8 @@
  * Domain Path: /languages
  * Description: Resize images on the fly - an TimThumb alternative with WordPress defaults
  * Version:	    1.0.0
- * Author:      Frank Bültge
- * Author URI:  http://bueltge.de
+ * Author:      Frank Bültge, Syamil MJ
+ * Author URI:  
  * License:     GPLv3
  */
 
