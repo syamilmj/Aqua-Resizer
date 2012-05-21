@@ -32,7 +32,7 @@ You can then use it in your theme as such:
 	aq_resize( $img_url,$width );
 ```
 
-More usage instructions and examples can be found in our [wiki](https://github.com/sy4mil/Aqua-Resizer/wiki)
+More usage instructions and examples can be found in our [wiki](https://github.com/bueltge/WP-Image-Resizer/wiki)
 
 ### Contact & Feedback
 The plugin is designed and developed by [Syamil MJ](http://aquagraphite.com/) and me ([Frank Bültge](http://bueltge.de))
