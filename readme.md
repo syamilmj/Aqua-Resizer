@@ -21,13 +21,13 @@ You can then use it in your theme as such:
 	wp_img_resizer( $args );
 ```
 
-**Return single value or array with url, width, height
+**Return single value or array with url, width, height**
 ```
 	$args = array( 'url' => 'your img url', 'width' => 'your wish for width' );
 	wp_img_resizer_src( $args );
 ```
 
-**Also the first solution if Aqua Resizer
+**Also the first solution if Aqua Resizer**
 ```
 	aq_resize( $img_url,$width );
 ```

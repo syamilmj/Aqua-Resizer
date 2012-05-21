@@ -44,12 +44,12 @@ This plugin requires WordPress >= 3.3 and tested with PHP Interpreter >= 5.3
 if ( ! function_exists( 'wp_img_resizer_src' ) ) {
 	
 	/**
-	 * Resize images on the fly
+	 * Retrieve an image to represent an url on the fly
 	 * 
 	 * @param   $args  Array with
-	 *          url    
-	 *          width  
-	 *          height 
+	 *          url    => path to the image
+	 *          width  => 
+	 *          height => Optional
 	 *          crop   => Optional, Whether to crop image or resize. | default is FALSE 
 	 *          single => Optional, true for single url on return $image, false for Array | default is TRUE
 	 * @return  $image Array with url, width, height
@@ -77,6 +77,9 @@ if ( ! function_exists( 'wp_img_resizer_src' ) ) {
 		
 		if ( ! $args['width'] )
 			return FALSE;
+		// set to integer
+		$args['width']  = (int) $args['width'];
+		$args['height'] = (int) $args['height'];
 		
 		// set var for original image
 		$original = array(
@@ -192,6 +195,23 @@ if ( ! function_exists( 'wp_img_resizer_src' ) ) {
 
 if ( ! function_exists( 'wp_img_resizer' ) ) {
 	
+	/**
+	 * Get an HTML img element representing an image url
+	 * 
+	 * @param   $args  Array with
+	 *          url    => path to the image
+	 *          width  => 
+	 *          height => Optional
+	 *          crop   => Optional, Whether to crop image or resize. | default is FALSE 
+	 *          single => Optional, true for single url on return $image, false for Array | default is TRUE
+	 *          echo   => Optional, true for echo the html, false for an return | default is true
+	 * @param   $attr  Array for attributes of html in img-tag
+	 *          src    =>
+	 *          class  =>
+	 *          alt    =>
+	 *          title  =>
+	 * @return  $image Array with url, width, height
+	 */
 	function wp_img_resizer( $args = '', $attr = '' ) {
 		
 		// set to get an array
