@@ -255,6 +255,15 @@ if ( ! function_exists( 'wp_img_resizer' ) ) {
 
 if ( ! function_exists( 'aq_resize' ) ) {
 	
+	/**
+	 * Aqua Resizer
+	 * 
+	 * @param string $url - (required) must be uploaded using wp media uploader
+	 * @param int $width - (required)
+	 * @param int $height - (optional)
+	 * @param bool $crop - (optional) default to soft crop
+	 * @param bool $single - (optional) returns an array if false
+	 */
 	function aq_resize( $url, $width, $height = null, $crop = null, $single = true ) {
 		
 		$args = array(
