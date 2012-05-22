@@ -10,9 +10,22 @@ There are a couple of image resizing scripts out there that already have this fu
 With Aqua Resizer, the only required inputs are the URL and width. It's easy, fast & efficient. Additionally, you have the additional options such as the height, crop, and array return.
 
 ### How to use
+You can use the solution as plugin or include the functions in your theme.
+
+** As Plugin **
+Install the plugin and activate in backend. After activation you can use all functions.
 1. Upload the file to the `/wp-content/plugins/` directory
 1. Activate the plugin through the 'Plugins' menu in WordPress
 
+** In your theme **
+Include the the file with follow syntax in your `functions.php` of your theme and now you can also use the functions. 
+```
+require_once( 'aq_resizer.php' );
+```
+
+Now you can use the different functions.
+
+The follow is only an small example, you find more functions, possibilities and examples of source on the [wiki](https://github.com/bueltge/WP-Image-Resizer/wiki) to this repository
 You can then use it in your theme as such:
 
 **Echo img-tag**
