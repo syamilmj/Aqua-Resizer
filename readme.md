@@ -40,6 +40,9 @@ Website: http://aquagraphite.com
 
 ## Changelog
 
+**v1.1.4**
+- fix for compatibility with wpml
+
 **v1.1.3**
 - array return use int (0,1,2)
 
