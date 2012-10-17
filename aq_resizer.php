@@ -3,7 +3,7 @@
 /**
 * Title		: Aqua Resizer
 * Description	: Resizes WordPress images on the fly
-* Version	: 1.1.4
+* Version	: 1.1.5
 * Author	: Syamil MJ
 * Author URI	: http://aquagraphite.com
 * License	: WTFPL - http://sam.zoy.org/wtfpl/
@@ -56,29 +56,11 @@ function aq_resize( $url, $width, $height = null, $crop = null, $single = true )
 	$dst_rel_path = str_replace( '.'.$ext, '', $rel_path);
 	$destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
 	
-	//if orig size is smaller
-	if($width >= $orig_w) {
-		
-		if(!$dst_h) :
-			//can't resize, so return original url
-			$img_url = $url;
-			$dst_w = $orig_w;
-			$dst_h = $orig_h;
-			
-		else :
-			//else check if cache exists
-			if(file_exists($destfilename) && getimagesize($destfilename)) {
-				$img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.{$ext}";
-			} 
-			//else resize and return the new resized image url
-			else {
-				$resized_img_path = image_resize( $img_path, $width, $height, $crop );
-				$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
-				$img_url = $upload_url . $resized_rel_path;
-			}
-			
-		endif;
-		
+	if(!$dst_h) {
+		//can't resize, so return original url
+		$img_url = $url;
+		$dst_w = $orig_w;
+		$dst_h = $orig_h;
 	}
 	//else check if cache exists
 	elseif(file_exists($destfilename) && getimagesize($destfilename)) {
@@ -87,8 +69,12 @@ function aq_resize( $url, $width, $height = null, $crop = null, $single = true )
 	//else, we resize the image and return the new resized image url
 	else {
 		$resized_img_path = image_resize( $img_path, $width, $height, $crop );
-		$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
-		$img_url = $upload_url . $resized_rel_path;
+		if(!is_wp_error($resized_img_path)) {
+			$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
+			$img_url = $upload_url . $resized_rel_path;
+		} else {
+			return false;
+		}
 	}
 	
 	//return the output
