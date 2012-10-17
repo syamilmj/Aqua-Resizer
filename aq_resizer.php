@@ -23,6 +23,12 @@
 
 function aq_resize( $url, $width, $height = null, $crop = null, $single = true ) {
 	
+	//retina check - if the wp-retina-2x plugin is installed, follow suit and double the size of images
+	if (  in_array( 'wp-retina-2x/wp-retina-2x.php', apply_filters( 'active_plugins', get_option( 'active_plugins' ) ) ) ) { 
+		$width = $width * 2;
+		$height = $height * 2;
+	}
+	
 	//validate inputs
 	if(!$url OR !$width ) return false;
 	
