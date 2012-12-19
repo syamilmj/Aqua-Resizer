@@ -3,20 +3,20 @@
 /**
 * Title		: Aqua Resizer
 * Description	: Resizes WordPress images on the fly
-* Version	: 1.1.5
+* Version	: 1.1.6
 * Author	: Syamil MJ
 * Author URI	: http://aquagraphite.com
 * License	: WTFPL - http://sam.zoy.org/wtfpl/
 * Documentation	: https://github.com/sy4mil/Aqua-Resizer/
 *
-* @param string $url - (required) must be uploaded using wp media uploader
-* @param int $width - (required)
-* @param int $height - (optional)
-* @param bool $crop - (optional) default to soft crop
-* @param bool $single - (optional) returns an array if false
-* @uses wp_upload_dir()
-* @uses image_resize_dimensions()
-* @uses image_resize()
+* @param	string $url - (required) must be uploaded using wp media uploader
+* @param	int $width - (required)
+* @param	int $height - (optional)
+* @param	bool $crop - (optional) default to soft crop
+* @param	bool $single - (optional) returns an array if false
+* @uses		wp_upload_dir()
+* @uses		image_resize_dimensions() | image_resize()
+* @uses		wp_get_image_editor()
 *
 * @return str|array
 */
@@ -68,13 +68,36 @@ function aq_resize( $url, $width, $height = null, $crop = null, $single = true )
 	} 
 	//else, we resize the image and return the new resized image url
 	else {
-		$resized_img_path = image_resize( $img_path, $width, $height, $crop );
-		if(!is_wp_error($resized_img_path)) {
-			$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
-			$img_url = $upload_url . $resized_rel_path;
+		
+		// Note: This pre-3.5 fallback check will edited out in subsequent version
+		if(function_exists('wp_get_image_editor')) {
+		
+			$editor = wp_get_image_editor($img_path);
+			
+			if ( is_wp_error( $editor ) || is_wp_error( $editor->resize( $width, $height, $crop ) ) )
+				return false;
+			
+			$resized_file = $editor->save();
+			
+			if(!is_wp_error($resized_file)) {
+				$resized_rel_path = str_replace( $upload_dir, '', $resized_file['path']);
+				$img_url = $upload_url . $resized_rel_path;
+			} else {
+				return false;
+			}
+			
 		} else {
-			return false;
+		
+			$resized_img_path = image_resize( $img_path, $width, $height, $crop ); // Fallback foo
+			if(!is_wp_error($resized_img_path)) {
+				$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
+				$img_url = $upload_url . $resized_rel_path;
+			} else {
+				return false;
+			}
+		
 		}
+		
 	}
 	
 	//return the output
