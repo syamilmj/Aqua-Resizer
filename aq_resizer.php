@@ -71,22 +71,31 @@ function aq_resize( $url, $width, $height = null, $crop = null, $single = true )
 		
 		// Note: This pre-3.5 fallback check will edited out in subsequent version
 		if(function_exists('wp_get_image_editor')) {
+		
 			$editor = wp_get_image_editor($img_path);
 			
 			if ( is_wp_error( $editor ) || is_wp_error( $editor->resize( $width, $height, $crop ) ) )
 				return false;
 			
-			$resized_img_path = $editor->save();
+			$resized_file = $editor->save();
+			
+			if(!is_wp_error($resized_file)) {
+				$resized_rel_path = str_replace( $upload_dir, '', $resized_file['path']);
+				$img_url = $upload_url . $resized_rel_path;
+			} else {
+				return false;
+			}
 			
 		} else {
-			$resized_img_path = image_resize( $img_path, $width, $height, $crop ); // Fallback foo
-		}
 		
-		if(!is_wp_error($resized_img_path)) {
-			$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
-			$img_url = $upload_url . $resized_rel_path;
-		} else {
-			return false;
+			$resized_img_path = image_resize( $img_path, $width, $height, $crop ); // Fallback foo
+			if(!is_wp_error($resized_img_path)) {
+				$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
+				$img_url = $upload_url . $resized_rel_path;
+			} else {
+				return false;
+			}
+		
 		}
 		
 	}
