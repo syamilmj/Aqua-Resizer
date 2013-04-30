@@ -21,10 +21,10 @@
 * @return str|array
 */
 
-function aq_resize( $url, $width, $height = null, $crop = null, $single = true ) {
+function aq_resize( $url, $width = null, $height = null, $crop = null, $single = true ) {
 	
 	//validate inputs
-	if(!$url OR !$width ) return false;
+	if(!$url || (!$width && !$height)) return false;
 	
 	//define upload path & dir
 	$upload_info = wp_upload_dir();
