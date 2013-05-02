@@ -51,55 +51,60 @@ function aq_resize( $url, $width = null, $height = null, $crop = null, $single =
 	$dst_w = $dims[4];
 	$dst_h = $dims[5];
 	
-	//use this to check if cropped image already exists, so we can return that instead
-	$suffix = "{$dst_w}x{$dst_h}";
-	$dst_rel_path = str_replace( '.'.$ext, '', $rel_path);
-	$destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
-	
-	if(!$dst_h) {
-		//can't resize, so return original url
+	// return the original image only if it exactly fits the needed measures
+	if(!$dims && ((($height === null && $orig_w == $width) xor ($width === null && $orig_h == $height)) xor ($height == $orig_h && $width == $orig_w))) {
 		$img_url = $url;
-		$dst_w = $orig_w;
-		$dst_h = $orig_h;
-	}
-	//else check if cache exists
-	elseif(file_exists($destfilename) && getimagesize($destfilename)) {
-		$img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.{$ext}";
-	} 
-	//else, we resize the image and return the new resized image url
-	else {
+	    $dst_w = $orig_w;
+	    $dst_h = $orig_h;
+	} else {
+		//use this to check if cropped image already exists, so we can return that instead
+		$suffix = "{$dst_w}x{$dst_h}";
+		$dst_rel_path = str_replace( '.'.$ext, '', $rel_path);
+		$destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
 		
-		// Note: This pre-3.5 fallback check will edited out in subsequent version
-		if(function_exists('wp_get_image_editor')) {
-		
-			$editor = wp_get_image_editor($img_path);
-			
-			if ( is_wp_error( $editor ) || is_wp_error( $editor->resize( $width, $height, $crop ) ) )
-				return false;
-			
-			$resized_file = $editor->save();
-			
-			if(!is_wp_error($resized_file)) {
-				$resized_rel_path = str_replace( $upload_dir, '', $resized_file['path']);
-				$img_url = $upload_url . $resized_rel_path;
-			} else {
-				return false;
-			}
-			
-		} else {
-		
-			$resized_img_path = image_resize( $img_path, $width, $height, $crop ); // Fallback foo
-			if(!is_wp_error($resized_img_path)) {
-				$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
-				$img_url = $upload_url . $resized_rel_path;
-			} else {
-				return false;
-			}
-		
+		if(!$dims || $dst_w < $width || $dst_h < $height) {
+			//can't resize, so return false saying that the action to do could not be processed as planned.
+            return false;
 		}
-		
+		//else check if cache exists
+		elseif(file_exists($destfilename) && getimagesize($destfilename)) {
+			$img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.{$ext}";
+		} 
+		//else, we resize the image and return the new resized image url
+		else {
+			
+			// Note: This pre-3.5 fallback check will edited out in subsequent version
+			if(function_exists('wp_get_image_editor')) {
+			
+				$editor = wp_get_image_editor($img_path);
+				
+				if ( is_wp_error( $editor ) || is_wp_error( $editor->resize( $width, $height, $crop ) ) )
+					return false;
+				
+				$resized_file = $editor->save();
+				
+				if(!is_wp_error($resized_file)) {
+					$resized_rel_path = str_replace( $upload_dir, '', $resized_file['path']);
+					$img_url = $upload_url . $resized_rel_path;
+				} else {
+					return false;
+				}
+				
+			} else {
+			
+				$resized_img_path = image_resize( $img_path, $width, $height, $crop ); // Fallback foo
+				if(!is_wp_error($resized_img_path)) {
+					$resized_rel_path = str_replace( $upload_dir, '', $resized_img_path);
+					$img_url = $upload_url . $resized_rel_path;
+				} else {
+					return false;
+				}
+			
+			}
+			
+		}
 	}
-	
+
 	//return the output
 	if($single) {
 		//str return
