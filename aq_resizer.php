@@ -62,7 +62,7 @@ function aq_resize( $url, $width = null, $height = null, $crop = null, $single =
 		$dst_rel_path = str_replace( '.'.$ext, '', $rel_path);
 		$destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
 		
-		if(!$dims || $dst_w < $width || $dst_h < $height) {
+		if(!$dims || ($crop == true && ($dst_w < $width || $dst_h < $height))) {
 			//can't resize, so return false saying that the action to do could not be processed as planned.
             return false;
 		}
