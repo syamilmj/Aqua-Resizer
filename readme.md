@@ -1,5 +1,5 @@
 # [Aqua Resizer](http://aquagraphite.com/)
-### Version 1.1.6
+### Version 1.1.7
 
 * Author: Syamil MJ
 * Website: [Aquagraphite.com](http://aquagraphite.com/)
@@ -42,6 +42,11 @@ Twitter: http://twitter.com/syamilmj
 Website: http://aquagraphite.com
 
 ## Changelog
+
+**v1.1.7**
+- either $width or $height is required
+- return *false* if the image can not be resized to the exact dimension specified in the arguments in crop mode
+- return the original image if specified dimension is the same as the one of the original image
 
 **v1.1.6**
 - uses wp_get_image_editor() (WP3.5)
