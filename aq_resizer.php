@@ -21,10 +21,13 @@
 * @return str|array
 */
 
-function aq_resize( $url, $width = null, $height = null, $crop = null, $single = true ) {
+function aq_resize( $url, $width = null, $height = null, $crop = null, $single = true, $upscale = false) {
 	
 	//validate inputs
 	if(!$url || (!$width && !$height)) return false;
+
+	// caipt'n, ready to hook
+	if($upscale === true) add_filter('image_resize_dimensions', 'aq_upscale', 10, 6);
 	
 	//define upload path & dir
 	$upload_info = wp_upload_dir();
@@ -62,7 +65,7 @@ function aq_resize( $url, $width = null, $height = null, $crop = null, $single =
 		$dst_rel_path = str_replace( '.'.$ext, '', $rel_path);
 		$destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
 		
-		if(!$dims || ($crop == true && ($dst_w < $width || $dst_h < $height))) {
+		if(!$dims || ($crop == true && $upscale == false && ($dst_w < $width || $dst_h < $height))) {
 			//can't resize, so return false saying that the action to do could not be processed as planned.
             return false;
 		}
@@ -105,6 +108,9 @@ function aq_resize( $url, $width = null, $height = null, $crop = null, $single =
 		}
 	}
 
+	// okay, leave the ship
+	if($upscale === true) remove_filter('image_resize_dimensions', 'aq_upscale');
+
 	//return the output
 	if($single) {
 		//str return
@@ -119,4 +125,32 @@ function aq_resize( $url, $width = null, $height = null, $crop = null, $single =
 	}
 	
 	return $image;
+}
+
+
+function aq_upscale($default, $orig_w, $orig_h, $dest_w, $dest_h, $crop) {
+	if (!$crop) return null; // let the wordpress default function handle this
+
+	// here is the point we allow to use larger image size than the original one
+	$aspect_ratio = $orig_w / $orig_h;
+	$new_w = $dest_w;
+	$new_h = $dest_h;
+
+	if ( !$new_w ) {
+		$new_w = intval($new_h * $aspect_ratio);
+	}
+
+	if ( !$new_h ) {
+		$new_h = intval($new_w / $aspect_ratio);
+	}
+
+	$size_ratio = max($new_w / $orig_w, $new_h / $orig_h);
+
+	$crop_w = round($new_w / $size_ratio);
+	$crop_h = round($new_h / $size_ratio);
+
+	$s_x = floor( ($orig_w - $crop_w) / 2 );
+	$s_y = floor( ($orig_h - $crop_h) / 2 );
+
+	return array( 0, 0, (int) $s_x, (int) $s_y, (int) $new_w, (int) $new_h, (int) $crop_w, (int) $crop_h );
 }
