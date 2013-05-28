@@ -33,6 +33,15 @@ function aq_resize( $url, $width = null, $height = null, $crop = null, $single =
 	$upload_info = wp_upload_dir();
 	$upload_dir = $upload_info['basedir'];
 	$upload_url = $upload_info['baseurl'];
+	
+	/* if the $url scheme differs from $upload_url scheme, make them match */
+	if(!strncmp($url,$https_prefix,strlen($https_prefix))){ //if url begins with https:// make $upload_url begin with https:// as well
+		$upload_url = str_replace($http_prefix,$https_prefix,$upload_url);
+	}
+	elseif(!strncmp($url,$http_prefix,strlen($http_prefix))){ //if url begins with http:// make $upload_url begin with http:// as well
+		$upload_url = str_replace($https_prefix,$http_prefix,$upload_url);		
+	}
+	
 
 	// Check if $img_url is local.
 	if ( false === strpos( $url, $upload_url ) ) return false;
