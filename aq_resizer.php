@@ -21,10 +21,15 @@
  * @return str|array
  */
 
-function aq_resize( $url, $width = null, $height = null, $crop = null, $single = true, $upscale = false ) {
+function aq_resize( $url, $width = null, $height = null, $crop = null, $single = true, $upscale = false, $retina = false ) {
 
 	// Validate inputs.
 	if ( ! $url || ( ! $width && ! $height ) ) return false;
+	
+	// Retina size
+	$retina = $retina ? 2 : 1;
+	$width = $width * $retina;
+	$height = $height * $retina;
 
 	// Caipt'n, ready to hook.
 	if ( true === $upscale ) add_filter( 'image_resize_dimensions', 'aq_upscale', 10, 6 );
