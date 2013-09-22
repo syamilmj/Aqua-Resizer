@@ -1,5 +1,5 @@
 # [Aqua Resizer](http://aquagraphite.com/)
-### Version 1.1.7
+### Version 1.2
 
 * Author: Syamil MJ
 * Website: [Aquagraphite.com](http://aquagraphite.com/)
@@ -42,6 +42,11 @@ Twitter: http://twitter.com/syamilmj
 Website: http://aquagraphite.com
 
 ## Changelog
+
+**v1.2**
+- Aqua Resize is now basically a class (still with a wrapper function so usage has not changed at all)
+- class written as Singleton pattern
+- removed fallback for WP older v3.5
 
 **v1.1.7**
 - either $width or $height is required
