@@ -21,7 +21,7 @@
  * @return str|array
  */
 
-if(!class_exists('Aq_resize')) {
+if(!class_exists('Aq_Resize')) {
 	class Aq_Resize
 	{
 		/**
