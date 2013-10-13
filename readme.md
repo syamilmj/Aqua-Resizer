@@ -43,7 +43,7 @@ Website: http://aquagraphite.com
 
 ## Changelog
 
-**v1.2**
+**v1.2.0**
 - Aqua Resize is now basically a class (still with a wrapper function so usage has not changed at all)
 - class written as Singleton pattern
 - removed fallback for WP older v3.5
