@@ -19,6 +19,11 @@
  * @uses  wp_get_image_editor()
  *
  * @return str|array
+ *
+ * This is the Polygon Themes enhanced version with retina display support and postmeta for auto file deletion
+ * Link on GitHub: https://github.com/syamilmj/Aqua-Resizer
+ * Link for instructions: https://github.com/syamilmj/Aqua-Resizer/wiki
+ * Link for examples: https://github.com/syamilmj/Aqua-Resizer/wiki/Examples
  */
 
 if(!class_exists('Aq_Resize')) {
@@ -130,6 +135,22 @@ if(!class_exists('Aq_Resize')) {
                     if ( ! is_wp_error( $resized_file ) ) {
                         $resized_rel_path = str_replace( $upload_dir, '', $resized_file['path'] );
                         $img_url = $upload_url . $resized_rel_path;
+
+                        // Add the resized dimensions to original image metadata (so we can delete our resized images when the original image is delete from the Media Library) - Polygon Code
+			            global $wpdb;
+
+			            $query = $wpdb->prepare( "SELECT * FROM $wpdb->posts WHERE guid='%s'", $url );
+			            $get_attachment = $wpdb->get_results( $query );
+			            if ( !$get_attachment ) {
+			                return array( 'url' => $url, 'width' => $width, 'height' => $height );
+			            }
+
+			            $metadata = wp_get_attachment_metadata( $get_attachment[0]->ID );
+			            if ( isset( $metadata['image_meta'] ) ) {
+			                $metadata['image_meta']['resized_images'][] = $dst_w .'x'. $dst_h;
+			                wp_update_attachment_metadata( $get_attachment[0]->ID, $metadata );
+			            }
+
                     } else {
                         return false;
                     }
@@ -152,53 +173,8 @@ if(!class_exists('Aq_Resize')) {
                     2 => $dst_h
                 );
             }
-            
-            // Add the resized dimensions to original image metadata (so we can delete our resized images when the original image is delete from the Media Library)
-            global $wpdb;
-            
-            $query = $wpdb->prepare( "SELECT * FROM $wpdb->posts WHERE guid='%s'", $url );
-            $get_attachment = $wpdb->get_results( $query );
-            if ( !$get_attachment ) {
-                return array( 'url' => $url, 'width' => $width, 'height' => $height );
-            }
 
-            $metadata = wp_get_attachment_metadata( $get_attachment[0]->ID );
-            if ( isset( $metadata['image_meta'] ) ) {
-                $metadata['image_meta']['resized_images'][] = $dst_w .'x'. $dst_h;
-                wp_update_attachment_metadata( $get_attachment[0]->ID, $metadata );
-            }
-
-            // Retina Support - Create image@2x if possible
-            $retina_w = $dst_w*2;
-            $retina_h = $dst_h*2;
-            
-            //get image size after cropping
-            $dims_x2 = image_resize_dimensions($orig_w, $orig_h, $retina_w, $retina_h, $crop);
-            $dst_x2_w = $dims_x2[4];
-            $dst_x2_h = $dims_x2[5];
-            
-            // If possible lets make the @2x image
-            if($dst_x2_h) {
-            
-                //@2x image url
-                $destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}@2x.{$ext}";
-                
-                //check if retina image exists
-                if(file_exists($destfilename) && getimagesize($destfilename)) { 
-                    // already exists, do nothing
-                } else {
-                    // doesnt exist, lets create it
-                    $editor = wp_get_image_editor($img_path);
-                    if ( ! is_wp_error( $editor ) ) {
-                        $editor->resize( $retina_w, $retina_h, $crop );
-                        $editor->set_quality( 100 );
-                        $filename = $editor->generate_filename( $dst_w . 'x' . $dst_h . '@2x'  );
-                        $editor = $editor->save($filename); 
-                    }
-                }
-            
-            }
-
+            // Return image
             return $image;
         }
 
@@ -249,6 +225,11 @@ if(!function_exists('aq_resize')) {
         return $aq_resize->process( $url, $width, $height, $crop, $single, $upscale );
     }
 }
+
+
+
+
+
 
 /**
  *  Deletes the resized images when the original image is deleted from the Wordpress Media Library.
