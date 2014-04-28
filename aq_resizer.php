@@ -20,6 +20,10 @@
  * @uses  wp_get_image_editor()
  *
  * @return str|array
+ *
+ * Link on GitHub: https://github.com/syamilmj/Aqua-Resizer
+ * Link for instructions: https://github.com/syamilmj/Aqua-Resizer/wiki
+ * Link for examples: https://github.com/syamilmj/Aqua-Resizer/wiki/Examples
  */
 
 if(!class_exists('Aq_Resize')) {
@@ -131,6 +135,21 @@ if(!class_exists('Aq_Resize')) {
                     if ( ! is_wp_error( $resized_file ) ) {
                         $resized_rel_path = str_replace( $upload_dir, '', $resized_file['path'] );
                         $img_url = $upload_url . $resized_rel_path;
+
+                        // Add the resized dimensions to original image metadata (so we can delete our resized images when the original image is delete from the Media Library)
+                        global $wpdb;
+
+                        $query = $wpdb->prepare( "SELECT * FROM $wpdb->posts WHERE guid='%s'", $url );
+                        $get_attachment = $wpdb->get_results( $query );
+                        if ( !$get_attachment ) {
+                            return array( 'url' => $url, 'width' => $width, 'height' => $height );
+                        }
+
+                        $metadata = wp_get_attachment_metadata( $get_attachment[0]->ID );
+                        if ( isset( $metadata['image_meta'] ) ) {
+                            $metadata['image_meta']['resized_images'][] = $dst_w .'x'. $dst_h;
+                            wp_update_attachment_metadata( $get_attachment[0]->ID, $metadata );
+                        }
                     } else {
                         return false;
                     }
@@ -154,6 +173,53 @@ if(!class_exists('Aq_Resize')) {
                 );
             }
 
+            // RETINA Support 
+            $retina_w = $dst_w*2;
+            $retina_h = $dst_h*2;
+            
+            //get image size after cropping
+            $dims_x2 = image_resize_dimensions($orig_w, $orig_h, $retina_w, $retina_h, $crop);
+            $dst_x2_w = $dims_x2[4];
+            $dst_x2_h = $dims_x2[5];
+   
+            // If possible lets make the @2x image
+            if ($dst_x2_h) {
+            
+                //@2x image url
+                $destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}@2x.{$ext}";
+                
+                //check if retina image exists
+                if(file_exists($destfilename) && getimagesize($destfilename)) { 
+                    // already exists, do nothing
+                } else {
+                    // doesnt exist, lets create it
+                    $editor = wp_get_image_editor($img_path);
+                    if ( ! is_wp_error( $editor ) ) {
+                        $editor->resize( $retina_w, $retina_h, $crop );
+                        $editor->set_quality( 100 );
+                        $filename = $editor->generate_filename( $dst_w . 'x' . $dst_h . '@2x'  );
+                        $editor = $editor->save($filename); 
+
+                        // Add the resized dimensions to original image metadata (so we can delete our resized retina images when the original image is delete from the Media Library)
+                        global $wpdb;
+
+                        $query = $wpdb->prepare( "SELECT * FROM $wpdb->posts WHERE guid='%s'", $url );
+                        $get_attachment = $wpdb->get_results( $query );
+                        if ( !$get_attachment ) {
+                            return array( 'url' => $url, 'width' => $width, 'height' => $height );
+                        }
+
+                        $metadata = wp_get_attachment_metadata( $get_attachment[0]->ID );
+                        if ( isset( $metadata['image_meta'] ) ) {
+                            $metadata['image_meta']['resized_images'][] = $dst_w .'x'. $dst_h . '@2x';
+                            wp_update_attachment_metadata( $get_attachment[0]->ID, $metadata );
+                        }
+                    }
+                }
+            
+            }
+
+            // Return image
             return $image;
         }
 
@@ -206,3 +272,44 @@ if(!function_exists('aq_resize')) {
 }
 
 
+
+
+
+
+/**
+ *  Deletes the resized images when the original image is deleted from the Wordpress Media Library.
+ */
+add_action( 'delete_attachment', 'aq_delete_resized_images' );
+function aq_delete_resized_images( $post_id ) {
+
+    // Get attachment image metadata
+    $metadata = wp_get_attachment_metadata( $post_id );
+    if ( !$metadata )
+        return;
+
+    // Do some bailing if we cannot continue
+    if ( !isset( $metadata['file'] ) || !isset( $metadata['image_meta']['resized_images'] ) )
+        return;
+    $pathinfo = pathinfo( $metadata['file'] );
+    $resized_images = $metadata['image_meta']['resized_images'];
+
+    // Get Wordpress uploads directory (and bail if it doesn't exist)
+    $wp_upload_dir = wp_upload_dir();
+    $upload_dir = $wp_upload_dir['basedir'];
+    if ( !is_dir( $upload_dir ) )
+        return;
+
+    // Delete the resized images
+    foreach ( $resized_images as $dims ) {
+
+        // Get the resized images filename
+        $file = $upload_dir .'/'. $pathinfo['dirname'] .'/'. $pathinfo['filename'] .'-'. $dims .'.'. $pathinfo['extension'];
+        $file_retina = $upload_dir .'/'. $pathinfo['dirname'] .'/'. $pathinfo['filename'] .'-'. $dims .'@2x.'. $pathinfo['extension'];
+
+        // Delete the resized image
+        @unlink( $file );
+        @unlink( $file_retina );
+
+    }
+
+}
