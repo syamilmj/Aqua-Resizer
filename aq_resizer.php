@@ -69,16 +69,33 @@ if(!class_exists('Aq_Resize')) {
             $http_prefix = "http://";
             $https_prefix = "https://";
             
-            /* if the $url scheme differs from $upload_url scheme, make them match 
-               if the schemes differe, images don't show up. */
-            if(!strncmp($url,$https_prefix,strlen($https_prefix))){ //if url begins with https:// make $upload_url begin with https:// as well
-                $upload_url = str_replace($http_prefix,$https_prefix,$upload_url);
-            }
-            elseif(!strncmp($url,$http_prefix,strlen($http_prefix))){ //if url begins with http:// make $upload_url begin with http:// as well
-                $upload_url = str_replace($https_prefix,$http_prefix,$upload_url);      
+            if ( false !== strpos( $url, $upload_url ) ){  
+                /* if the $url scheme differs from $upload_url scheme, make them match 
+                   if the schemes differe, images don't show up. */
+                if(!strncmp($url,$https_prefix,strlen($https_prefix))){ //if url begins with https:// make $upload_url begin with https:// as well
+                    $upload_url = str_replace($http_prefix,$https_prefix,$upload_url);
+                }
+                elseif(!strncmp($url,$http_prefix,strlen($http_prefix))){ //if url begins with http:// make $upload_url begin with http:// as well
+                    $upload_url = str_replace($https_prefix,$http_prefix,$upload_url);      
+                }
             }
             
-
+            if ( false === strpos( $url, $upload_url ) ){            	
+            	$pinfo = pathinfo($url);
+            	$ext = $pinfo['extension'];
+            	if (stristr($ext,"?")) list($ext,$qs) = explode("?",$ext);           
+            	$md5_filename = md5($url). '.'. $ext;
+            	
+            	$md5_path = $upload_dir . '/'.$md5_filename;
+            	$md5_url = $upload_url . '/'.$md5_filename;
+            	
+            	if (!file_exists($md5_path)){
+            		$tmp_img = file_get_contents($url);
+            		file_put_contents($md5_path,$tmp_img);
+            	}            	
+            	$url = $md5_url;            	
+            }
+            
             // Check if $img_url is local.
             if ( false === strpos( $url, $upload_url ) ) return false;
 
