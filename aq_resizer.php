@@ -80,11 +80,6 @@ if(!class_exists('Aq_Resize')) {
                 }
             }
             
-             /**
-             * Library kan nu ook omgaan met remote afbeeldingen!
-             * 
-             * @author Ruben Harms             
-             */
             if ( false === strpos( $url, $upload_url ) ){            	
             	$pinfo = pathinfo($url);
             	$ext = $pinfo['extension'];
@@ -101,7 +96,6 @@ if(!class_exists('Aq_Resize')) {
             	$url = $md5_url;            	
             }
             
-
             // Check if $img_url is local.
             if ( false === strpos( $url, $upload_url ) ) return false;
 
