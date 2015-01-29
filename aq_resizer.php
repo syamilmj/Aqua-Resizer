@@ -13,6 +13,7 @@
  * @param int     $width    - (required)
  * @param int     $height   - (optional)
  * @param bool    $crop     - (optional) default to soft crop
+ * @param bool    $pad      - (optional) pad image with transparant background; overridden by crop
  * @param bool    $single   - (optional) returns an array if false
  * @param bool    $upscale  - (optional) resizes smaller images
  * @uses  wp_upload_dir()
@@ -54,7 +55,10 @@ if(!class_exists('Aq_Resize')) {
         /**
          * Run, forest.
          */
-        public function process( $url, $width = null, $height = null, $crop = null, $single = true, $upscale = false ) {
+        public function process( $url, $width = null, $height = null, $crop = null, $pad = null, $single = true, $upscale = false ) {
+            // Make options mutually exclusive
+            if ( $crop ) $pad = null;
+            
             // Validate inputs.
             if ( ! $url || ( ! $width && ! $height ) ) return false;
 
@@ -109,16 +113,56 @@ if(!class_exists('Aq_Resize')) {
                 $suffix = "{$dst_w}x{$dst_h}";
                 $dst_rel_path = str_replace( '.' . $ext, '', $rel_path );
                 $destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
+                $destfilenamepad = "{$upload_dir}{$dst_rel_path}-{$suffix}-pad.png";
 
                 if ( ! $dims || ( true == $crop && false == $upscale && ( $dst_w < $width || $dst_h < $height ) ) ) {
                     // Can't resize, so return false saying that the action to do could not be processed as planned.
                     return false;
                 }
-                // Else check if cache exists.
+                // Check if image has to be padded
+                elseif ( $pad && !($width == null) && !($height == null)) {
+                    // See if a padded version exists, return that
+                    if ( file_exists( $destfilenamepad ) && getimagesize( $destfilenamepad ) ) {
+                        $img_url = "{$upload_url}{$dst_rel_path}-{$suffix}-pad.png";
+                    }
+                    // Else, pad image to desired size
+                    else {
+                        // Create source image
+                        switch($ext){
+                            case 'gif': $old_image = imagecreatefromgif($img_path); break;
+                            case 'jpg': $old_image = imagecreatefromjpeg($img_path); break;
+                            case 'png': $old_image = imagecreatefrompng($img_path); break;
+                        }
+                        
+                        // Create transparent image in desired size
+                        $resized_image = imagecreatetruecolor($width, $height);
+                        imagesavealpha($resized_image, true);
+                        $trans_color = imagecolorallocatealpha($resized_image, 255, 255, 0, 127);
+                        imagefilledrectangle($resized_image, 0, 0, $width, $height, $trans_color);
+                        
+                        // Calculate offset
+                        if (($orig_w / $orig_h) >= ($width / $height)) {
+                            // by width
+                            $nx = 0;
+                            $ny = round(abs($height - $dst_h) / 2);
+                        } else {
+                            // by height
+                            $nx = round(abs($width - $dst_w) / 2);
+                            $ny = 0;
+                        }
+                        
+                        imagecopyresampled($resized_image, $old_image, $nx, $ny, 0, 0, $dst_w, $dst_h, $orig_w, $orig_h);
+                        $img_url = "{$upload_url}{$dst_rel_path}-{$suffix}-pad.png";
+                        imagepng($resized_image, $img_url);
+                        imagedestroy($resized_image);
+                        imagedestroy($old_image);
+                    }
+                }
+                // Else check if non-padded cache exists.
                 elseif ( file_exists( $destfilename ) && getimagesize( $destfilename ) ) {
                     $img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.{$ext}";
                 }
-                // Else, we resize the image and return the new resized image url.
+                // Else, we resize/crop the image and return the new resized image url.
                 else {
 
                     $editor = wp_get_image_editor( $img_path );
