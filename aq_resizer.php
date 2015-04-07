@@ -82,6 +82,7 @@ if(!class_exists('Aq_Resize')) {
                 
                 $http_prefix = "http://";
                 $https_prefix = "https://";
+                $relative_prefix = "//"; // The protocol-relative URL
                 
                 /* if the $url scheme differs from $upload_url scheme, make them match 
                    if the schemes differe, images don't show up. */
@@ -90,6 +91,9 @@ if(!class_exists('Aq_Resize')) {
                 }
                 elseif(!strncmp($url,$http_prefix,strlen($http_prefix))){ //if url begins with http:// make $upload_url begin with http:// as well
                     $upload_url = str_replace($https_prefix,$http_prefix,$upload_url);      
+                }
+                elseif(!strncmp($url,$relative_prefix,strlen($relative_prefix))){ //if url begins with // make $upload_url begin with // as well
+                    $upload_url = str_replace(array( 0 => "$http_prefix", 1 => "$https_prefix"),$relative_prefix,$upload_url);
                 }
                 
 
