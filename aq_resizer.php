@@ -120,7 +120,7 @@ if(!class_exists('Aq_Resize')) {
                 $dst_h = $dims[5];
 
                 // Return the original image only if it exactly fits the needed measures.
-                if ( ! $dims && ( ( ( null === $height && $orig_w >= $width ) xor ( null === $width && $orig_h >= $height ) ) xor ( $height <= $orig_h && $width <= $orig_w ) ) ) {
+                if ( ! $dims && ( ( ( null === $height && $orig_w <= $width ) xor ( null === $width && $orig_h <= $height ) ) xor ( $height == $orig_h && $width == $orig_w ) xor ( !$crop && ($height >= $orig_h || $width <= $orig_w) ) ) ) {
                     $img_url = $url;
                     $dst_w = $orig_w;
                     $dst_h = $orig_h;
