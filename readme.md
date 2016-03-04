@@ -43,6 +43,9 @@ Website: http://aquagraphite.com
 
 ## Changelog
 
+**v1.2.1**
+- WPML fix for image issue when Different domain per language is selected - https://github.com/syamilmj/Aqua-Resizer/issues/61
+
 **v1.2.0**
 - Aqua Resize is now basically a class (still with a wrapper function so usage has not changed at all)
 - class written as Singleton pattern
