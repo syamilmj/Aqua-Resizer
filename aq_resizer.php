@@ -106,41 +106,41 @@ if(!class_exists('Aq_Resize')) {
                 $img_path = $upload_dir . $rel_path;
 
                 // Check if img path exists, and is an image indeed.
-                if ( ! file_exists( $img_path ) or ! getimagesize( $img_path ) )
+                if ( ! file_exists( $img_path ))
+                    throw new Aq_Exception('Image file does not exist (or is not an image): ' . $img_path);
+
+                 $sizes = getimagesize( $img_path );
+                 if(!$sizes)
                     throw new Aq_Exception('Image file does not exist (or is not an image): ' . $img_path);
 
                 // Get image info.
                 $info = pathinfo( $img_path );
                 $ext = $info['extension'];
-                list( $orig_w, $orig_h ) = getimagesize( $img_path );
+                list( $orig_w, $orig_h ) = $sizes;
 
-                // Get image size after cropping.
-                $dims = image_resize_dimensions( $orig_w, $orig_h, $width, $height, $crop );
-                $dst_w = $dims[4];
-                $dst_h = $dims[5];
+                $suffix = "{$width}x{$height}";
+                $dst_rel_path = str_replace( '.' . $ext, '', $rel_path );
+                $destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.".strtolower($ext);
 
-                // Return the original image only if it exactly fits the needed measures.
-                if ( ! $dims && ( ( ( null === $height && $orig_w == $width ) xor ( null === $width && $orig_h == $height ) ) xor ( $height == $orig_h && $width == $orig_w ) ) ) {
-                    $img_url = $url;
-                    $dst_w = $orig_w;
-                    $dst_h = $orig_h;
+                if(file_exists($destfilename) && filemtime($destfilename) >= filemtime($img_path)) {
+                    $img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.".strtolower($ext);           
                 } else {
-                    // Use this to check if cropped image already exists, so we can return that instead.
-                    $suffix = "{$dst_w}x{$dst_h}";
-                    $dst_rel_path = str_replace( '.' . $ext, '', $rel_path );
-                    $destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
+                    // Get image size after cropping.
+                    $dims = image_resize_dimensions( $orig_w, $orig_h, $width, $height, $crop );
+                    $dst_w = $dims[4];
+                    $dst_h = $dims[5];
 
-                    if ( ! $dims || ( true == $crop && false == $upscale && ( $dst_w < $width || $dst_h < $height ) ) ) {
-                        // Can't resize, so return false saying that the action to do could not be processed as planned.
-                        throw new Aq_Exception('Unable to resize image because image_resize_dimensions() failed');
-                    }
-                    // Else check if cache exists.
-                    elseif ( file_exists( $destfilename ) && getimagesize( $destfilename ) ) {
-                        $img_url = "{$upload_url}{$dst_rel_path}-{$suffix}.{$ext}";
+                    if ( ! $dims && ( ( ( null === $height && $orig_w == $width ) xor ( null === $width && $orig_h == $height ) ) xor ( $height == $orig_h && $width == $orig_w ) ) ) {
+                        // Return the original image only if it exactly fits the needed measures.
+                        $img_url = $url;
+                        $dst_w = $orig_w;
+                        $dst_h = $orig_h;
+                    } else if ( ! $dims || ( true == $crop && false == $upscale && ( $dst_w < $width || $dst_h < $height ) ) ) {
+                            // Can't resize, so return false saying that the action to do could not be processed as planned.
+                            throw new Aq_Exception('Unable to resize image because image_resize_dimensions() failed');
                     }
                     // Else, we resize the image and return the new resized image url.
                     else {
-
                         $editor = wp_get_image_editor( $img_path );
 
                         if ( is_wp_error( $editor ) || is_wp_error( $editor->resize( $width, $height, $crop ) ) ) {
@@ -156,7 +156,6 @@ if(!class_exists('Aq_Resize')) {
                         } else {
                             throw new Aq_Exception('Unable to save resized image file: ' . $editor->get_error_message());
                         }
-
                     }
                 }
 
