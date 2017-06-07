@@ -77,6 +77,12 @@ if(!class_exists('Aq_Resize')) {
                 $upload_info = wp_upload_dir();
                 $upload_dir = $upload_info['basedir'];
                 $upload_url = $upload_info['baseurl'];
+                if ( is_ssl() && 'http:' == substr( $upload_url, 0, 5 ) ) {
+	                $upload_url = 'https:' . substr( $upload_url, 5 );
+	            }
+	            if ( is_ssl() && 'http:' == substr( $url, 0, 5 ) ) {
+		            $url = 'https:' . substr( $url, 5 );
+	            }
                 
                 $http_prefix = "http://";
                 $https_prefix = "https://";
@@ -164,11 +170,11 @@ if(!class_exists('Aq_Resize')) {
                 // Return the output.
                 if ( $single ) {
                     // str return.
-                    $image = $img_url;
+                    $image = preg_replace('#^https?:#', '', $img_url);
                 } else {
                     // array return.
                     $image = array (
-                        0 => $img_url,
+                        0 => preg_replace('#^https?:#', '', $img_url),
                         1 => $dst_w,
                         2 => $dst_h
                     );
