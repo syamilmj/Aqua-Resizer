@@ -237,7 +237,15 @@ if(!function_exists('aq_resize')) {
     function aq_resize( $url, $width = null, $height = null, $crop = null, $single = true, $upscale = false ) {
 
         /* WPML Fix */
-        $url = apply_filters( 'wpml_permalink', $url, apply_filters( 'wpml_current_language', NULL ) );
+	    if ( defined( 'ICL_SITEPRESS_VERSION' ) ) {
+		    global $sitepress;
+		    $negotiation_type = $sitepress->get_setting( 'language_negotiation_type' );
+
+		    If ( $negotiation_type === 2 ) {
+			    $url = $sitepress->convert_url( $url, $sitepress->get_default_language() );
+		    }
+	    }
+	    /* WPML Fix */
 
 
         $aq_resize = Aq_Resize::getInstance();
