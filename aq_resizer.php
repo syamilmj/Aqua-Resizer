@@ -155,6 +155,16 @@ if(!class_exists('Aq_Resize')) {
                             throw new Aq_Exception('Unable to save resized image file: ' . $editor->get_error_message());
                         }
 
+   						// Updating attachment metadata
+						if ($meta = wp_get_attachment_metadata($att_id = attachment_url_to_postid($url))) {
+                            $meta['sizes']['aq-' . $suffix] = array(
+                                'file' => $resized_file['file'],
+                                'width' => $resized_file['width'],
+                                'height' => $resized_file['height'],
+                                'mime-type' => $resized_file['mime-type'],
+                            );
+                            wp_update_attachment_metadata( $att_id, $meta );
+                        }
                     }
                 }
 
