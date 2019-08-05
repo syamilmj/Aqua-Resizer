@@ -21,7 +21,6 @@
  * @uses  wp_get_image_editor()
  *
  */
-
 namespace Zyv4yk\AqResize;
 
 class Resize
