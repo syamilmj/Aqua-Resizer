@@ -30,17 +30,6 @@ More usage instructions and examples can be found in our [wiki](https://github.c
 
 Do whatever you want with it. A linkback would be nice :)
 
-## Donations
-If you have some spare bucks, please seriously consider helping the World Food Programme to build world without hunger. Your donations will provide foods & shelters to those who needs them the most! - [Fill the Cup!](https://www.wfp.org/donate/fillthecup_getinvolved)
-
-Or, [buy me a coffee](http://goo.gl/tsbK5) :)
-
-## Contacts
-
-Twitter: http://twitter.com/syamilmj
-
-Website: http://aquagraphite.com
-
 ## Changelog
 
 **v1.2.1**
