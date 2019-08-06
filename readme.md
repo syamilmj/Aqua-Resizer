@@ -1,5 +1,5 @@
 # [Aqua Resizer](http://aquagraphite.com/)
-### Version 1.2
+### Version 2.0
 
 * Author: Syamil MJ
 * Website: [Aquagraphite.com](http://aquagraphite.com/)
