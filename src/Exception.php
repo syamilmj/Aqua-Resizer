@@ -1,7 +1,7 @@
 <?php
 
 
-namespace Zyv4yk\AqResize;
+namespace Sy4mil\AqResize;
 
 
 class Exception extends \Exception
