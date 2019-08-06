@@ -1,5 +1,5 @@
 # [Aqua Resizer](http://aquagraphite.com/)
-### Version 1.2
+### Version 2.0
 
 * Author: Syamil MJ
 * Website: [Aquagraphite.com](http://aquagraphite.com/)
@@ -42,6 +42,10 @@ Twitter: http://twitter.com/syamilmj
 Website: http://aquagraphite.com
 
 ## Changelog
+**v2.0.0**
+- PSR 4 autoloading
+- linter style fixes
+- Needs PHP7.0+ to works
 
 **v1.2.1**
 - WPML fix for image issue when Different domain per language is selected - https://github.com/syamilmj/Aqua-Resizer/issues/61
@@ -80,7 +84,6 @@ Website: http://aquagraphite.com
 
 **v1.0**
 first commit
-
 
 
 
