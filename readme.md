@@ -30,7 +30,22 @@ More usage instructions and examples can be found in our [wiki](https://github.c
 
 Do whatever you want with it. A linkback would be nice :)
 
+## Donations
+If you have some spare bucks, please seriously consider helping the World Food Programme to build world without hunger. Your donations will provide foods & shelters to those who needs them the most! - [Fill the Cup!](https://www.wfp.org/donate/fillthecup_getinvolved)
+
+Or, [buy me a coffee](http://goo.gl/tsbK5) :)
+
+## Contacts
+
+Twitter: http://twitter.com/syamilmj
+
+Website: http://aquagraphite.com
+
 ## Changelog
+**v2.0.0**
+- PSR 4 autoloading
+- linter style fixes
+- Needs PHP7.0+ to works
 
 **v1.2.1**
 - WPML fix for image issue when Different domain per language is selected - https://github.com/syamilmj/Aqua-Resizer/issues/61
@@ -69,7 +84,6 @@ Do whatever you want with it. A linkback would be nice :)
 
 **v1.0**
 first commit
-
 
 
 

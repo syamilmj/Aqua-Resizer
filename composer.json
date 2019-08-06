@@ -8,8 +8,11 @@
         "assets",
         "optimization"
     ],
+    "require": {
+        "php": ">=7.2.0"
+    },
     "homepage": "https://github.com/zyv4yk/Aqua-Resizer",
-    "version": "1.2.1",
+    "version": "2.0.0",
     "authors": [
         {
             "name": "Syamil MJ",
