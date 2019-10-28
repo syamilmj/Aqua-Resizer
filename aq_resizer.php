@@ -125,7 +125,9 @@ if(!class_exists('Aq_Resize')) {
                 } else {
                     // Use this to check if cropped image already exists, so we can return that instead.
                     $suffix = "{$dst_w}x{$dst_h}";
-                    $dst_rel_path = str_replace( '.' . $ext, '', $rel_path );
+                    // Only replace actual extension to prevent replacing extension string occurrence in filename
+                    $ext_pos = strrpos( $rel_path, $ext );
+                    $dst_rel_path = substr_replace( $rel_path, '', $ext_pos - 1, strlen( $ext ) + 1 );
                     $destfilename = "{$upload_dir}{$dst_rel_path}-{$suffix}.{$ext}";
 
                     if ( ! $dims || ( true == $crop && false == $upscale && ( $dst_w < $width || $dst_h < $height ) ) ) {
