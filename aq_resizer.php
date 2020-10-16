@@ -156,9 +156,7 @@ if(!class_exists('Aq_Resize')) {
                             *update meta media
                             */
                             //get ID media
-                            global $wpdb;
-                            $data_attachment = $wpdb->get_col($wpdb->prepare("SELECT ID FROM $wpdb->posts WHERE guid='%s';", $url ));
-                            $ID_data = $data_attachment[0];
+                            $ID_data = attachment_url_to_postid($url);
 
                             //create name
                             $data_path  = "{$dst_rel_path}-{$suffix}.{$ext}";
