@@ -151,6 +151,29 @@ if(!class_exists('Aq_Resize')) {
                         if ( ! is_wp_error( $resized_file ) ) {
                             $resized_rel_path = str_replace( $upload_dir, '', $resized_file['path'] );
                             $img_url = $upload_url . $resized_rel_path;
+                            
+                            /*
+                            *update meta media
+                            */
+                            //get ID media
+                            $ID_data = attachment_url_to_postid($url);
+
+                            //create name
+                            $data_path  = "{$dst_rel_path}-{$suffix}.{$ext}";
+                            $metaname   = '_attachment_aqresize_'.$ID_data;
+
+                            ///get option meta
+                            $meta_media = get_option($metaname);
+                            if ($meta_media) {
+                                array_push($meta_media,$data_path);
+                                $newdata = $meta_media;
+                            } else {
+                                $newdata = array($data_path);
+                            }
+
+                            //update option
+                            update_option($metaname,$newdata,''); 
+                            
                         } else {
                             throw new Aq_Exception('Unable to save resized image file: ' . $editor->get_error_message());
                         }
@@ -243,6 +266,26 @@ if(!function_exists('aq_resize')) {
         $aq_resize = Aq_Resize::getInstance();
         return $aq_resize->process( $url, $width, $height, $crop, $single, $upscale );
     }
+}
+
+/**
+ * when delete attachment, get data option
+ */
+add_action('delete_attachment', 'delete_attachment_aq_resize', 10, 1);
+function delete_attachment_aq_resize($id) {
+
+    $metaname       = '_attachment_aqresize_'.$id;
+    $meta_media     = get_option($metaname);
+    $upload_dir     = wp_get_upload_dir()['basedir'];
+
+    if($meta_media){
+        foreach($meta_media as $path) {
+            $file_path = $upload_dir.$path;  // path of the file which need to be deleted. 
+            wp_delete_file( $file_path ); //delete file here.
+        }
+    }
+    //delete option
+    delete_option($metaname);
 }
 
 
